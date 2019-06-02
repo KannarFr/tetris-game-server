@@ -1,4 +1,4 @@
-package com.orangeade.tetris.model
+package com.orangeade.tetris.game.model
 
 case class Point(val x: Int, val y: Int, val color: String) {
   def moveDown = Point(x, y+1, color)

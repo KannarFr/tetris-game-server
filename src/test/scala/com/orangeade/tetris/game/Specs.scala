@@ -2,10 +2,10 @@ package com.orangeade.tetris.game
 
 import org.scalatest._
 
-import com.orangeade.tetris.model._
+import com.orangeade.tetris.game.model._
 
 class Specs extends FlatSpec with Matchers {
-  "A Board" should "pop values in last-in-first-out order" in {
+  "A GameEngine" should "run until game over" in {
 
     val game = GameEngine(Size(9, 20), RandomStoneFactory)
 

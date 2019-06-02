@@ -3,7 +3,7 @@ package com.orangeade.tetris.game
 import java.util.Calendar
 import java.util.UUID
 
-import com.orangeade.tetris.model._
+import com.orangeade.tetris.game.model._
 
 case class GameEngine(val boardSize: Size, val stoneFactory: StoneFactory) {
   val id = UUID.randomUUID

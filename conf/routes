@@ -1,0 +1,4 @@
+GET     /matches                            com.orangeade.tetris.server.controller.MatchController.getMatches
+GET     /matches/:matchId                   com.orangeade.tetris.server.controller.MatchController.getMatchById(matchId: String)
+POST    /match                              com.orangeade.tetris.server.controller.MatchController.create
+GET     /matches/:matchId/ws                com.orangeade.tetris.server.controller.MatchController.matchSocket(matchId: String)

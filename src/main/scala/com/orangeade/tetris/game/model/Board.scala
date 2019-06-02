@@ -1,4 +1,4 @@
-package com.orangeade.tetris.model
+package com.orangeade.tetris.game.model
 
 import java.util.Calendar
 

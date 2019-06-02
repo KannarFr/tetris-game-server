@@ -1,4 +1,4 @@
-package com.orangeade.tetris.model
+package com.orangeade.tetris.game.model
 
 object Stone {
   def apply(start: Point): Stone = Stone(List(start))
