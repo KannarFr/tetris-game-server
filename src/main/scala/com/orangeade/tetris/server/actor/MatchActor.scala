@@ -31,16 +31,14 @@ class MatchActor(boards: Map[Player, GameEngine]) extends Actor {
   def receive = {
     case _: StartMatch => {
       logger.debug(s"start received at ${ZonedDateTime.now}")
-      sender ! MatchView("yo", None, boards)
+      sender ! boards
     }
     case _: Tick => {
       logger.debug(s"tick received for yo at ${ZonedDateTime.now}")
       boards.values.map { gameEngine =>
         if (gameEngine.isGameRunning) gameEngine.moveDown
       }
-      val yo = MatchView("yo", None, boards)
-      println(yo)
-      sender ! yo
+      sender ! boards
     }
     case x: InEvent => {
       logger.debug("mdr")

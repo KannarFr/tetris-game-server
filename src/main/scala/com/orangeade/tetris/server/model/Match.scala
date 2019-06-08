@@ -39,10 +39,12 @@ object match_module {
     def writes(x: GameEngine): JsValue = Json.toJson(x.points)
   }
 
+  type Boards = Map[Player, GameEngine]
+
   final case class Match(
     id: String,
     label: Option[String],
-    boards: Map[Player, GameEngine],
+    boards: Boards,
     events: Flow[MatchEvent, JsValue, _]
   ) {
     def serialize = MatchView(id, label, boards)
@@ -51,7 +53,7 @@ object match_module {
   final case class MatchView(
     id: String,
     label: Option[String],
-    boards: Map[Player, GameEngine],
+    boards: Boards,
   )
   implicit val matchViewWrites = Json.writes[MatchView]
 
@@ -74,7 +76,7 @@ object match_module {
     def getMatchViewById(matchId: String): Option[MatchView] = matches.find(_.id == matchId).map(_.serialize)
     def getMatchById(matchId: String): Option[Match] = matches.find(_.id == matchId)
     def create(wannaBeMatch: WannaBeMatch) = {
-      def eventsFlowFor(boards: Map[Player, GameEngine]) = {
+      def eventsFlowFor(boards: Boards) = {
         val tickingSource: Source[Tick, Cancellable] = Source.tick(
           initialDelay = 1 seconds,
           interval = 1 seconds,
@@ -87,7 +89,7 @@ object match_module {
         val (matchSink, matchSource) = MergeHub.source[MatchEvent]
           .merge(startMatchSource)
           .merge(tickingSource)
-          .ask[MatchView](system.actorOf(MatchActor.props(boards)))
+          .ask[Boards](system.actorOf(MatchActor.props(boards)))
           .map(Json.toJson(_))
           .toMat(BroadcastHub.sink[JsValue])(Keep.both)
           .run
@@ -104,6 +106,8 @@ object match_module {
       )
 
       matches = matches :+ newMatch
+
+      newMatch.id
     }
   }
 }

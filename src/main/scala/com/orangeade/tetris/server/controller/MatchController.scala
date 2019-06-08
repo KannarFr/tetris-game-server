@@ -78,8 +78,8 @@ class MatchController @Inject()(
   def create = authenticatedAction.async(parse.json[WannaBeMatch]) { implicit request =>
     Future {
       val m = request.body
-      matchDAO.create(m)
-      Created
+      val matchIdCreated = matchDAO.create(m)
+      Created(Json.toJson(matchIdCreated))
     }
   }
 }
