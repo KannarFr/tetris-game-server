@@ -14,7 +14,7 @@ import akka.actor._
 
 import com.orangeade.tetris.game.GameEngine
 import com.orangeade.tetris.server.model.match_module._
-import com.orangeade.tetris.server.model.player_module.Player
+import com.orangeade.tetris.server.model.player_module.PlayerView
 
 trait MatchEvent
 case class InEvent(playerId: String, action: String) extends MatchEvent
@@ -23,9 +23,9 @@ case class StartMatch() extends MatchEvent
 case class StopMatch() extends MatchEvent
 
 object MatchActor {
-  def props(boards: Map[Player, GameEngine]): Props = Props(new MatchActor(boards))
+  def props(boards: Map[PlayerView, GameEngine]): Props = Props(new MatchActor(boards))
 }
-class MatchActor(boards: Map[Player, GameEngine]) extends Actor {
+class MatchActor(boards: Map[PlayerView, GameEngine]) extends Actor {
   private val logger = Logger(getClass)
 
   def receive = {

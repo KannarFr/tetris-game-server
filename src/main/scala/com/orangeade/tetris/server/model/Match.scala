@@ -39,7 +39,7 @@ object match_module {
     def writes(x: GameEngine): JsValue = Json.toJson(x.points)
   }
 
-  type Boards = Map[Player, GameEngine]
+  type Boards = Map[PlayerView, GameEngine]
 
   final case class Match(
     id: String,
@@ -59,7 +59,7 @@ object match_module {
 
   final case class WannaBeMatch(
     label: Option[String],
-    players: List[Player],
+    playersId: List[String],
     size: Size
   )
   implicit val wannaBeMatchReads = Json.reads[WannaBeMatch]
@@ -68,6 +68,7 @@ object match_module {
     implicit system: ActorSystem,
     implicit val ec: ExecutionContext,
     materializer: Materializer,
+    playerDAO: PlayerDAO,
   ) {
     // matches are stored in RAM, so we only keep running matches
     private var matches = List.empty[Match]
@@ -97,7 +98,9 @@ object match_module {
         Flow.fromSinkAndSource(matchSink, matchSource)
       }
 
-      val boards = wannaBeMatch.players.map(_ -> GameEngine(wannaBeMatch.size, RandomStoneFactory)).toMap
+      val players = playerDAO.getPlayersByIds(wannaBeMatch.playersId).map(_.toView)
+
+      val boards = players.map(_ -> GameEngine(wannaBeMatch.size, RandomStoneFactory)).toMap
       val newMatch = Match(
         id = "match_" + UUID.randomUUID,
         label = wannaBeMatch.label,
