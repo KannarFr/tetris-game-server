@@ -70,7 +70,7 @@ object player_module {
     }
 
     def getPlayerById(playerId: String): Option[Player] = db.withConnection { implicit c =>
-      SQL(selectSQL[Player] + " WHERE player_id LIKE '${playerId}' ") as (parser[Player]().singleOpt)
+      SQL(selectSQL[Player] + s" WHERE player_id LIKE '${playerId}'") as (parser[Player]().singleOpt)
     }
 
     def create(wannaBePlayer: WannaBePlayer): Either[PlayerError, Unit] = db.withConnection { implicit c =>
