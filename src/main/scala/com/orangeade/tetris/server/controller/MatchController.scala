@@ -78,8 +78,10 @@ class MatchController @Inject()(
   def create = authenticatedAction.async(parse.json[WannaBeMatch]) { implicit request =>
     Future {
       val m = request.body
-      val matchIdCreated = matchDAO.create(m)
-      Created(Json.toJson(matchIdCreated))
+      matchDAO.create(m) match {
+        case Left(e) => InternalServerError("All playersId don't exist.")
+        case Right(matchId) => Created(Json.toJson(matchId))
+      }
     }
   }
 }

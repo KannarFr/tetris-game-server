@@ -64,6 +64,9 @@ object match_module {
   )
   implicit val wannaBeMatchReads = Json.reads[WannaBeMatch]
 
+  sealed abstract class MatchError
+  case object AllPlayersIdDontExist extends MatchError
+
   class MatchDAO @Inject()(
     implicit system: ActorSystem,
     implicit val ec: ExecutionContext,
@@ -76,7 +79,7 @@ object match_module {
     def getMatchesView: List[MatchView] = matches.map(_.serialize)
     def getMatchViewById(matchId: String): Option[MatchView] = matches.find(_.id == matchId).map(_.serialize)
     def getMatchById(matchId: String): Option[Match] = matches.find(_.id == matchId)
-    def create(wannaBeMatch: WannaBeMatch) = {
+    def create(wannaBeMatch: WannaBeMatch): Either[MatchError, String] = {
       def eventsFlowFor(boards: Boards) = {
         val tickingSource: Source[Tick, Cancellable] = Source.tick(
           initialDelay = 1 seconds,
@@ -99,17 +102,22 @@ object match_module {
       }
 
       val playersView = playerDAO.getPlayersByIds(wannaBeMatch.playersId).map(_.toView)
-      val boards = playersView.map(_ -> GameEngine(wannaBeMatch.size, RandomStoneFactory)).toMap
-      val newMatch = Match(
-        id = "match_" + UUID.randomUUID,
-        label = wannaBeMatch.label,
-        boards = boards,
-        events = eventsFlowFor(boards)
-      )
 
-      matches = matches :+ newMatch
+      if (playersView.size == wannaBeMatch.playersId.size) {
+        val boards = playersView.map(_ -> GameEngine(wannaBeMatch.size, RandomStoneFactory)).toMap
+        val newMatch = Match(
+          id = "match_" + UUID.randomUUID,
+          label = wannaBeMatch.label,
+          boards = boards,
+          events = eventsFlowFor(boards)
+        )
 
-      newMatch.id
+        matches = matches :+ newMatch
+
+        Right(newMatch.id)
+      } else {
+        Left(AllPlayersIdDontExist)
+      }
     }
   }
 }
