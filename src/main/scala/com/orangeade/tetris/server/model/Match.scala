@@ -98,9 +98,8 @@ object match_module {
         Flow.fromSinkAndSource(matchSink, matchSource)
       }
 
-      val players = playerDAO.getPlayersByIds(wannaBeMatch.playersId).map(_.toView)
-
-      val boards = players.map(_ -> GameEngine(wannaBeMatch.size, RandomStoneFactory)).toMap
+      val playersView = playerDAO.getPlayersByIds(wannaBeMatch.playersId).map(_.toView)
+      val boards = playersView.map(_ -> GameEngine(wannaBeMatch.size, RandomStoneFactory)).toMap
       val newMatch = Match(
         id = "match_" + UUID.randomUUID,
         label = wannaBeMatch.label,
