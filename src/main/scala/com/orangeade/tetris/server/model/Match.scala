@@ -80,7 +80,7 @@ object match_module {
       def eventsFlowFor(boards: Boards) = {
         val tickingSource: Source[Tick, Cancellable] = Source.tick(
           initialDelay = 1 seconds,
-          interval = 1 seconds,
+          interval = 100 milliseconds,
           tick = Tick()
         )
 
