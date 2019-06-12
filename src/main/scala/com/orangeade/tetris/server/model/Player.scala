@@ -70,7 +70,7 @@ object player_module {
     }
 
     def getPlayersByIds(playersId: List[String]): List[Player] = db.withConnection { implicit c =>
-      SQL(selectSQL[Player] + " WHERE player_id IN (" + playersId.mkString(",") + ")") as (parser[Player]().*)
+      SQL(selectSQL[Player] + " WHERE player_id IN (" + playersId.mkString("'","','","'") + ")") as (parser[Player]().*)
     }
 
     def getPlayerById(playerId: String): Option[Player] = db.withConnection { implicit c =>
