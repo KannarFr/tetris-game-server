@@ -40,9 +40,24 @@ class MatchActor(boards: Map[PlayerView, GameEngine]) extends Actor {
       }
       sender ! boards
     }
-    case x: InEvent => {
-      logger.debug("mdr")
-      sender ! "yo"
+    case event: InEvent => {
+      boards
+        .keys
+        .filter(_.id == event.playerId)
+        .map(boards.get)
+        .map { gameEngineOpt =>
+          gameEngineOpt.map { gameEngine =>
+            logger.debug(s"Let's ${event.action} for ${event.playerId}.")
+            event.action match {
+              case "moveLeft" => gameEngine.moveLeft
+              case "moveRight" => gameEngine.moveRight
+              case "rotateLeft" => gameEngine.rotateLeft
+              case "rotateRight" => gameEngine.rotateRight
+            }
+          }
+        }
+
+      sender ! boards
     }
     case x: Any => {
       logger.debug("on sait pas" + x.toString)
