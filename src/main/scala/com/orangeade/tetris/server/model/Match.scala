@@ -43,22 +43,19 @@ object match_module {
 
   final case class Match(
     id: String,
-    label: Option[String],
     boards: Boards,
     events: Flow[MatchEvent, JsValue, _]
   ) {
-    def serialize = MatchView(id, label, boards)
+    def serialize = MatchView(id, boards)
   }
 
   final case class MatchView(
     id: String,
-    label: Option[String],
     boards: Boards,
   )
   implicit val matchViewWrites = Json.writes[MatchView]
 
   final case class WannaBeMatch(
-    label: Option[String],
     playersId: List[String],
     size: Size
   )
@@ -107,7 +104,6 @@ object match_module {
         val boards = playersView.map(_ -> GameEngine(wannaBeMatch.size, RandomStoneFactory)).toMap
         val newMatch = Match(
           id = "match_" + UUID.randomUUID,
-          label = wannaBeMatch.label,
           boards = boards,
           events = eventsFlowFor(boards)
         )
