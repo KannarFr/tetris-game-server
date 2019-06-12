@@ -65,6 +65,10 @@ object player_module {
   class PlayerDAO @Inject()(
     db: Database
   ) {
+    def getPlayers: List[Player] = db.withConnection { implicit c =>
+      SQL(selectSQL[Player]) as (parser[Player]().*)
+    }
+
     def getPlayersByIds(playersId: List[String]): List[Player] = db.withConnection { implicit c =>
       SQL(selectSQL[Player] + " WHERE player_id IN (" + playersId.mkString(",") + ")") as (parser[Player]().*)
     }
