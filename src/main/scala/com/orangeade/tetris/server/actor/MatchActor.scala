@@ -47,12 +47,16 @@ class MatchActor(boards: Map[PlayerView, GameEngine]) extends Actor {
         .map(boards.get)
         .map { gameEngineOpt =>
           gameEngineOpt.map { gameEngine =>
-            logger.debug(s"Let's ${event.action} for ${event.playerId}.")
-            event.action match {
-              case "moveLeft" => gameEngine.moveLeft
-              case "moveRight" => gameEngine.moveRight
-              case "rotateLeft" => gameEngine.rotateLeft
-              case "rotateRight" => gameEngine.rotateRight
+            if (gameEngine.isGameRunning) {
+              logger.debug(s"Let's ${event.action} for ${event.playerId}.")
+              event.action match {
+                case "moveLeft" => gameEngine.moveLeft
+                case "moveRight" => gameEngine.moveRight
+                case "rotateLeft" => gameEngine.rotateLeft
+                case "rotateRight" => gameEngine.rotateRight
+              }
+            } else {
+              logger.debug("fini bro teste pas")
             }
           }
         }
