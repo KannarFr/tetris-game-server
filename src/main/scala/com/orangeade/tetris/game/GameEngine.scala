@@ -1,6 +1,5 @@
 package com.orangeade.tetris.game
 
-import java.util.Calendar
 import java.util.UUID
 
 import com.orangeade.tetris.game.model._

@@ -1,6 +1,7 @@
 package com.orangeade.tetris.server.model
 
-import java.time.ZonedDateTime
+import java.time.Duration
+import java.time.LocalDateTime
 import java.util.UUID
 import javax.inject._
 
@@ -24,7 +25,7 @@ import anorm._
 import anorm.SqlParser._
 
 import com.orangeade.tetris.game.GameEngine
-import com.orangeade.tetris.game.model.{ Point, RandomStoneFactory, Size }
+import com.orangeade.tetris.game.model.{ Point, RandomStoneFactory, Size, Statistics }
 import com.orangeade.tetris.server.actor._
 import com.orangeade.tetris.server.model.player_module._
 import com.orangeade.tetris.server.model.pg.pg_entity_module._
@@ -35,8 +36,21 @@ object match_module {
   implicit val sizeFormat = Json.format[Size]
   implicit val pointFormat = Json.format[Point]
 
+  implicit val statisticsWrites = new Writes[Statistics] {
+    def writes(x: Statistics): JsValue = {
+      val s = x.stopTime.map { stopTime =>
+        Duration.between(x.startTime, stopTime).toMillis
+      }.getOrElse {
+        Duration.between(x.startTime, LocalDateTime.now).toMillis
+      }
+
+      //val duration = String.format("%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
+      Json.toJson(x.rowsCompleted, s)
+    }
+  }
+
   implicit val matchEngineWrites = new Writes[GameEngine] {
-    def writes(x: GameEngine): JsValue = Json.toJson(x.points)
+    def writes(x: GameEngine): JsValue = Json.toJson(x.points, x.statistics)
   }
 
   type Boards = Map[PlayerView, GameEngine]

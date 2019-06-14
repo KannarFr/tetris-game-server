@@ -1,6 +1,6 @@
 package com.orangeade.tetris.game.model
 
-import java.util.Calendar
+import java.time.LocalDateTime
 
 class Board (
     val size: Size,
@@ -14,7 +14,7 @@ class Board (
       size,
       List[Stone](firstStone.toTopCenter(Point(size.width / 2, 0, ""))),
       firstPreview,
-      Statistics(Calendar.getInstance().getTime(), 0),
+      Statistics(LocalDateTime.now, None, 0),
       true
     )
   }
@@ -27,7 +27,7 @@ class Board (
 
   def update(stones: List[Stone], numberOfRowsRemoved: Int, preview: Stone) = {
     if (stones.exists(s => s.doesCollide(this.preview)) || (!stones.isEmpty && stones.head.isOnTop)) {
-      new Board(size, stones, preview, statistics, false)
+      new Board(size, stones, preview, statistics.copy(stopTime = Some(LocalDateTime.now)), false)
     } else {
       new Board(
         size,
