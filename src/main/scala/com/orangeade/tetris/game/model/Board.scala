@@ -3,12 +3,12 @@ package com.orangeade.tetris.game.model
 import java.time.LocalDateTime
 
 class Board (
-    val size: Size,
-    val stones: List[Stone],
-    val preview: Stone,
-    val statistics: Statistics,
-    val isGameRunning: Boolean
-  ) {
+  val size: Size,
+  val stones: List[Stone],
+  val preview: Stone,
+  val statistics: Statistics,
+  val isGameRunning: Boolean
+) {
   def this(size: Size, firstStone: Stone, firstPreview: Stone) {
     this(
       size,

@@ -98,7 +98,7 @@ case class GameEngine(val boardSize: Size, val stoneFactory: StoneFactory) {
   ): (List[Point], Int) = {
     points match {
       case Nil => (Nil, 0)
-      case _ =>  {
+      case _ => {
         val (pointsInRow, pointsNotInRow) = points.partition(_.y == height)
         val (rows, numberOfRemovedRows) = removeFullRows(pointsNotInRow, height - 1)
         if (pointsInRow.length == board.size.width) {
