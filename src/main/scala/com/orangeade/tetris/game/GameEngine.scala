@@ -51,14 +51,6 @@ case class GameEngine(val boardSize: Size, val stoneFactory: StoneFactory) {
     future = Nil
   }
 
-  def draw = {
-    if (isRunning || !board.isGameRunning) board.draw
-    else {
-      "GAME PAUSED\n" +
-      board.draw
-    }
-  }
-
   def forceNewStone = {
     board = board.forceNewStone(stoneFactory.createRandomStone)
     history = board :: history
@@ -71,8 +63,6 @@ case class GameEngine(val boardSize: Size, val stoneFactory: StoneFactory) {
   def points = board.points
 
   def statistics = board.statistics
-
-  def drawBoardOnly = board.drawBoardOnly
 
   def pause = isRunning = false
   def continue = {
