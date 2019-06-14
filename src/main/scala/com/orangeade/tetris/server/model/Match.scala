@@ -93,8 +93,8 @@ object match_module {
     def create(wannaBeMatch: WannaBeMatch): Either[MatchError, String] = {
       def eventsFlowFor(boards: Boards) = {
         val tickingSource: Source[Tick, Cancellable] = Source.tick(
-          initialDelay = 1 seconds,
-          interval = 100 milliseconds,
+          initialDelay = 0 seconds,
+          interval = 10 milliseconds,
           tick = Tick()
         )
 
