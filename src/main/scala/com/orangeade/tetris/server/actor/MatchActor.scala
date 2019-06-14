@@ -34,7 +34,7 @@ class MatchActor(boards: Map[PlayerView, GameEngine]) extends Actor {
       sender ! boards
     }
     case _: Tick => {
-      logger.debug(s"tick received for yo at ${ZonedDateTime.now}")
+      //logger.debug(s"tick received for yo at ${ZonedDateTime.now}")
       boards.values.map { gameEngine =>
         if (gameEngine.isGameRunning) gameEngine.moveDown
       }
@@ -48,16 +48,16 @@ class MatchActor(boards: Map[PlayerView, GameEngine]) extends Actor {
         .map { gameEngineOpt =>
           gameEngineOpt.map { gameEngine =>
             if (gameEngine.isGameRunning) {
-              logger.debug(s"Let's ${event.action} for ${event.playerId}.")
+              //logger.debug(s"Let's ${event.action} for ${event.playerId}.")
               event.action match {
                 case "moveLeft" => gameEngine.moveLeft
                 case "moveRight" => gameEngine.moveRight
                 case "rotateLeft" => gameEngine.rotateLeft
                 case "rotateRight" => gameEngine.rotateRight
               }
-            } else {
+            }/* else {
               logger.debug("fini bro teste pas")
-            }
+            }*/
           }
         }
 
